@@ -83,6 +83,8 @@ def main():
     key=[]
     key.append(ord("T")^0x32)
     key.append(ord("h")^0x51)
+    print ('KEY4')
+    print(key[0])
 
 #    kkey=ord("T")^0x32
 
@@ -94,6 +96,24 @@ def main():
     print("Done.")
 
 
+    good_keys=list()
+    for i in range(len(ba_cip_list[-1])):
+        good_keys.append(list())
+        for key in range(256):
+            good_key=True
+            for cip in ba_cip_list:
+                t=cip[i]^key
+                if( not ( ((t>=65) and (t<=90)) or ((t>=97) and (t<=122)) or t==20 ) ):
+                #if( not ( ((t>=97) and (t<=122)) or t==32 ) ):
+                    good_key=False
+            if good_key:
+                good_keys[i].append(key)
+    for key in good_keys:
+        print(len(key))
 
-
+    i=0
+    for cip in (ba_cip_list):
+        for key in good_keys[0]:
+            print(chr(cip[i]^key),end='')
+        print()
 main()
