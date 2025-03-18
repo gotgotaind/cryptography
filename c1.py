@@ -80,7 +80,19 @@ def main():
         zz=c["ba"].hex(' ').upper()
         print(f'{zz=},{c["freq"]=},{c["len"]=}')
 
+    key=[]
+    key.append(ord("T")^0x32)
+    key.append(ord("h")^0x51)
+
+#    kkey=ord("T")^0x32
+
+
+    for cip in (ba_cip_list):
+        for i in range(2):
+            print(chr(cip[i]^key[i]),end='')
+        print()
     print("Done.")
+
 
 
 
