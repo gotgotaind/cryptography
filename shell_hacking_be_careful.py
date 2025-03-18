@@ -42,14 +42,9 @@ char_dist['J']=9613410
 char_dist['X']=8369915
 char_dist['Z']=4975847
 char_dist['Q']=4550166
-char_dist[' ']=4000000
-char_dist[')']=4000000
-char_dist['(']=4000000
-char_dist['-']=4000000
-char_dist['\'']=4000000
-char_dist['.']=4000000
-char_dist[',']=4000000
-char_dist[':']=4000000
+char_dist[' ']=91258980
+char_dist[')']=455016
+char_dist['(']=455016
 
 def strxor(a, b):     # xor two strings of different lengths
     if len(a) > len(b):
@@ -116,25 +111,19 @@ def main():
         zz=c["ba"].hex(' ').upper()
         print(f'{zz=},{c["freq"]=},{c["len"]=}')
 
-    secret_len=len(ba_cip_list[-1])
-    key=[-1 for element in range(secret_len)]
-
-    key[0]=(ord("T")^0x32)
-    key[1]=(ord("h")^0x51)
-    key[2]=(ord("e")^0xb)
-    key[10]=ord('t')^0x41
-    key[21]=ord('c')^0x1c
+    key=[]
+    key.append(ord("T")^0x32)
+    key.append(ord("h")^0x51)
+    key.append(ord("e")^0xb)
 
 #    kkey=ord("T")^0x32
 
 
     for cip in (ba_cip_list):
-        i=21
-        print(chr(cip[i]^key[i]),end='')
+        for i in range(3):
+            print(chr(cip[i]^key[i]),end='')
         print()
     print("Done.")
-
-#    exit()
 
 
     good_keys=list()
@@ -144,9 +133,9 @@ def main():
             good_key=True
             for cip in ba_cip_list:
                 t=cip[i]^key
-                #if( not ( ((t>=65) and (t<=90)) or ((t>=97) and (t<=122)) or t==32 or t==40 or t==41 or t==45 or t==39 or t==44 or t==46 or t==58 ) ):
+                if( not ( ((t>=65) and (t<=90)) or ((t>=97) and (t<=122)) or t==32 or t==40 or t==41 ) ):
                 #if( not ( ((t>=97) and (t<=122)) or t==32 ) ):
-                if( not ( ((t>=32) and (t<=122)) ) ):
+                #if( not ( ((t>=32) and (t<=122)) ) ):
                     good_key=False
             if good_key:
                 good_keys[i].append(key)
@@ -154,54 +143,27 @@ def main():
         print(len(key))
 
     
-    best_keys=[-1 for element in range(secret_len)]
+    secret_len=len(ba_cip_list[-1])
+    best_keys=[False for element in range(secret_len)]
 
     for i in range(secret_len):
         best_score=0
+        best_key=0
         for key in good_keys[i]:
             score=0
             for cip in (ba_cip_list):
-                CHAR=chr(cip[i]^key).upper() 
-                if(CHAR in char_dist.keys()):
-                    score=score+char_dist[CHAR]
-                else:
-                    score=score+4000000
+                score+=char_dist[chr(cip[i]^key).upper()]
             if score > best_score:
                 best_score=score
                 best_keys[i]=key
 
-    print(good_keys[0])
-    print(best_keys[0])
 
-
-    print()
-    print('xx',end='')
-    for i in range(secret_len):
-        print(f"{i:02d}",end='')
-    print()
-    for j,cip in enumerate(ba_cip_list):
-        print(f"{j:02d}",end='')
+    for cip in (ba_cip_list):
         for i in range(secret_len):
-            print(f"{cip[i]:02x}",end='')
-        print()
-
-    print()
-
-
-    print('xx',end='')
-    for i in range(secret_len):
-        print(f"{i:02d}",end='')
-    print()
-    for j,cip in enumerate(ba_cip_list):
-        print(f"{j:02d}",end='')
-        for i in range(secret_len):
-        #for i in range(1):
-            if( best_keys[i]!=-1 ):
+            if( not best_keys[i] ):
                 print(chr(cip[i]^best_keys[i]),end='')
-                print(' ',end='')
             else:
                 print('x',end='')
-                print(' ',end='')
         print()
 
 main()
