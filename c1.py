@@ -119,18 +119,35 @@ def main():
     secret_len=len(ba_cip_list[-1])
     key=[-1 for element in range(secret_len)]
 
+    forced_key=dict()
+
     key[0]=(ord("T")^0x32)
+    forced_key[0]=key[0]
     key[1]=(ord("h")^0x51)
+    forced_key[1]=key[1]
     key[2]=(ord("e")^0xb)
+    forced_key[2]=key[2]
     key[10]=ord('t')^0x41
+    forced_key[10]=key[10]
     key[21]=ord('c')^0x1c
+    forced_key[21]=key[21]
+    key[26]=ord('n')^0x05
+    forced_key[26]=key[26]
+    key[32]=ord('g')^0x0e
+    forced_key[32]=key[32]
+    key[39]=ord('e')^0x25
+    forced_key[39]=key[39]
+    key[40]=ord('a')^0x7b
+    forced_key[40]=key[40]
+    key[41]=ord('m')^0xf1
+    forced_key[41]=key[41]
 
 #    kkey=ord("T")^0x32
 
 
     for cip in (ba_cip_list):
-        i=21
-        print(chr(cip[i]^key[i]),end='')
+        i=39
+        print((cip[i]^key[i]),end='')
         print()
     print("Done.")
 
@@ -144,9 +161,9 @@ def main():
             good_key=True
             for cip in ba_cip_list:
                 t=cip[i]^key
-                #if( not ( ((t>=65) and (t<=90)) or ((t>=97) and (t<=122)) or t==32 or t==40 or t==41 or t==45 or t==39 or t==44 or t==46 or t==58 ) ):
+                if( not ( ((t>=65) and (t<=90)) or ((t>=97) and (t<=122)) or t==32 or t==40 or t==41 or t==45 or t==39 or t==44 or t==46 or t==58 or t==63 or t==53 or t==48 or t==42 or(t>=48 and t<=57)) ):
                 #if( not ( ((t>=97) and (t<=122)) or t==32 ) ):
-                if( not ( ((t>=32) and (t<=122)) ) ):
+                #if( not ( ((t>=32) and (t<=122)) ) ):
                     good_key=False
             if good_key:
                 good_keys[i].append(key)
@@ -196,6 +213,9 @@ def main():
         print(f"{j:02d}",end='')
         for i in range(secret_len):
         #for i in range(1):
+            if( i in forced_key.keys() ):
+                best_keys[i]=forced_key[i]
+
             if( best_keys[i]!=-1 ):
                 print(chr(cip[i]^best_keys[i]),end='')
                 print(' ',end='')
@@ -203,5 +223,19 @@ def main():
                 print('x',end='')
                 print(' ',end='')
         print()
+
+    cip=ba_cip_list[-1]
+    for i in range(secret_len):
+        if( i in forced_key.keys() ):
+            best_keys[i]=forced_key[i]
+
+        if( best_keys[i]!=-1 ):
+            print(chr(cip[i]^best_keys[i]),end='')
+            #print(f"{cip[i]:02x}")
+        else:
+            print('x',end='')
+    print()
+
+
 
 main()
