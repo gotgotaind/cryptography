@@ -8,5 +8,12 @@ c1=c1[16:]
 print("".join(list(map(hex,c1))))
 
 
-cipher = AES.new(k1, AES.MODE_CBC, nonce=)"
+cipher = AES.new(k1, AES.MODE_CBC)
 
+plaintext = cipher.decrypt(c1)
+
+try:
+#    cipher.verify(tag)
+    print("The message is authentic:", plaintext)
+except ValueError:
+    print("Key incorrect or message corrupted")
