@@ -25,12 +25,12 @@ def decr(k,c,mode):
         print("".join(list(map(hex,c1))))
         cipher = AES.new(k, mode,iv=iv)
     else:
-        iv=c[0:8]
-        print("".join(list(map(hex,iv))))
-        counter=c[8:16]
+        nonce=c[0:8]
+        iv=c[8:16]
         c1=c[16:]
+        print("".join(list(map(hex,iv))))
         print("".join(list(map(hex,c1))))
-        cipher = AES.new(k, mode,nonce=iv,counter=counter)
+        cipher = AES.new(k, mode,nonce=nonce,initial_value=iv)
 
     
     plaintext = cipher.decrypt(c1)
